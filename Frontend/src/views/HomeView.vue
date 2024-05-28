@@ -6,16 +6,15 @@ const password = ref('');
 const emailError = ref('');
 const passwordError = ref('');
 
-const handleLogin = (event) => {
+const handleLogin = async (event) => {
   event.preventDefault();
 
-  // Reset errors
   emailError.value = '';
   passwordError.value = '';
 
   let valid = true;
 
-  // Basic email validation
+  //email validate
   if (!email.value) {
     emailError.value = 'Email is required';
     valid = false;
@@ -24,7 +23,7 @@ const handleLogin = (event) => {
     valid = false;
   }
 
-  // Password validation: must contain between 4 and 60 characters
+  //password validate
   if (!password.value) {
     passwordError.value = 'Password is required';
     valid = false;
@@ -34,8 +33,20 @@ const handleLogin = (event) => {
   }
 
   if (valid) {
-    // Perform login (e.g., API call)
-    console.log('Logging in with User :', email.value,'Password : ', password.value);
+    // Perform login (API call)
+    try {
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username: email.value, password: password.value }),
+      });
+      const result = await response.text();
+      console.log(result); // Handle success (e.g., store JWT, navigate to another page)
+    } catch (error) {
+      console.error('Error:', error); // Handle error
+    }
   }
 };
 
@@ -62,14 +73,12 @@ const handleLogin = (event) => {
 </template>
 
 <style>
-/* Basic styling for the form container */
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Styling for the form */
 .responsive-form {
   width: 90%;
   max-width: 500px;
@@ -89,5 +98,4 @@ const handleLogin = (event) => {
   color: red;
   font-size: 0.875rem;
 }
-
-</style>
+</style>async async 
